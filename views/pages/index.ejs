@@ -7,7 +7,7 @@
 
 <body>
   <div id="container">
-    <div id="insideWall" />
+    <div id="background" />
     <div id="overlay" />
   </div>
   <style>
@@ -46,7 +46,7 @@
 }
 
 
-#insideWall {
+#background {
   position: absolute;
   top: 0;
   left: 0;
@@ -61,7 +61,7 @@
 
 const container = document.getElementById('container');
 const overlay = document.getElementById('overlay');
-const insideWall = document.getElementById('insideWall');
+const background = document.getElementById('background');
 
 let isDragging = false;
 let currentX;
@@ -71,13 +71,13 @@ let initialY;
 let xOffset = 0;
 let yOffset = 0;
 
+const maxAmount = 0.02
+const offsetAmount = 0.9;
+
 overlay.addEventListener("mousedown", dragStart);
 overlay.addEventListener("mouseup", dragEnd);
 overlay.addEventListener("mousemove", drag);
 
-overlay.addEventListener("touchstart", dragStart, { passive: true });
-overlay.addEventListener("touchend", dragEnd, { passive: true });
-overlay.addEventListener("touchmove", drag, { passive: true });
 
 const dragStart = (e) => {
   initialX = e.clientX - xOffset;
@@ -100,7 +100,7 @@ const drag = (e) => {
     currentY = e.clientY - initialY;
   
 
-    const maxDrag = container.offsetWidth * 0.02; 
+    const maxDrag = container.offsetWidth * maxAmount; 
     if (Math.abs(currentX) > maxDrag || Math.abs(currentY) > maxDrag) {
       return;
     }
@@ -109,9 +109,32 @@ const drag = (e) => {
     yOffset = currentY;
   
     setTranslate(currentX, currentY, overlay);
-    setTranslate(currentX * 0.9, currentY * 0.9, insideWall);
+    setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
   }
 };
+
+window.addEventListener("deviceorientation", (event) => {
+  // Get the current values of gamma and beta
+  const gamma = event.gamma;
+  const beta = event.beta;
+
+  // Update the currentX and currentY values based on the orientation
+  if (gamma > 0) {
+    currentX += gamma * sensitivity;
+  } else if (gamma < 0) {
+    currentX += gamma * sensitivity;
+  }
+
+  if (beta > 0) {
+    currentY += beta * sensitivity;
+  } else if (beta < 0) {
+    currentY += beta * sensitivity;
+  }
+
+  // Update the position of the divs
+  setTranslate(currentX, currentY, overlay);
+  setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
+});
 
 
 
@@ -138,7 +161,7 @@ const flicker = () => {
 
 const changeColor = (lit) => {
   setBackgroundImage(overlay, lit ? '/assets/WALL-LIT.png' : '/assets/WALL-UNLIT.png');
-  setBackgroundImage(insideWall, lit ? '/assets/ROOM-LIT.png' : '/assets/ROOM-UNLIT.png');
+  setBackgroundImage(background, lit ? '/assets/ROOM-LIT.png' : '/assets/ROOM-UNLIT.png');
 };
 
 startFlicker();
