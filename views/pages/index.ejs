@@ -157,28 +157,23 @@ const changeColor = (lit) => {
   setBackgroundImage(background, lit ? '/assets/ROOM-LIT.png' : '/assets/ROOM-UNLIT.png');
 };
 
-const onClick = () => {
-
-  if (typeof DeviceMotionEvent.requestPermission === 'function') {
-    window.alert('test')
-    DeviceMotionEvent.requestPermission()
-      .then((state) => {
-        if (state === 'granted') {
+function onClick() {
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission()
+        .then((permissionState) => {
+          if (permissionState === 'granted') {
           window.addEventListener('devicemotion', handleOrientation);
         } else {
           window.alert('Request to access the orientation was rejected');
         }
-      })
-      .catch(console.error);
-  } else {
-    window.addEventListener('devicemotion', handleOrientation);
+        })
+        .catch(console.error);
+    } else {
+      window.addEventListener('devicemotion', handleOrientation);
+    }
   }
-}
 
-startFlicker();
-
-
-
+  startFlicker();
   </script>
 </body>
 </html>
