@@ -157,19 +157,19 @@ const changeColor = (lit) => {
   setBackgroundImage(background, lit ? '/assets/ROOM-LIT.png' : '/assets/ROOM-UNLIT.png');
 };
 
-function onClick() {
-    if (typeof DeviceMotionEvent.requestPermission === 'function') {
-      DeviceMotionEvent.requestPermission()
+const onClick = () => {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
         .then((permissionState) => {
           if (permissionState === 'granted') {
-          window.addEventListener('devicemotion', handleOrientation);
+          window.addEventListener('deviceorientation', handleOrientation);
         } else {
           window.alert('Request to access the orientation was rejected');
         }
         })
         .catch(console.error);
     } else {
-      window.addEventListener('devicemotion', handleOrientation);
+      window.addEventListener('deviceorientation', handleOrientation);
     }
   }
 
