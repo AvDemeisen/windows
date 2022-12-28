@@ -70,49 +70,21 @@ let initialY;
 let xOffset = 0;
 let yOffset = 0;
 
-overlay.addEventListener("mousedown", dragStart);
-overlay.addEventListener("mouseup", dragEnd);
-overlay.addEventListener("mousemove", drag);
-
-if (window.DeviceOrientationEvent) {
-  window.addEventListener("deviceorientation", function(event) {
-    // Check if the device is tilted more than 20 degrees in either direction
-    if (Math.abs(event.gamma) > 20 || Math.abs(event.beta) > 20) {
-      // Calculate the drag values based on the tilt of the device
-      let currentX = event.gamma;
-      let currentY = event.beta;
-
-      // Invert the drag values if the device is tilted in the opposite direction
-      if (event.gamma < 0) {
-        currentX = -currentX;
-      }
-      if (event.beta < 0) {
-        currentY = -currentY;
-      }
-
-      // Set the translate values for the overlay and insideWall elements
-      setTranslate(currentX, currentY, overlay);
-      setTranslate(currentX * 0.9, currentY * 0.9, insideWall);
-    }
-  });
-}
-
-
-function dragStart(e) {
+const dragStart = (e) => {
   initialX = e.clientX - xOffset;
   initialY = e.clientY - yOffset;
   
   isDragging = true;
-}
+};
 
-function dragEnd(e) {
+const dragEnd = (e) => {
   initialX = currentX;
   initialY = currentY;
   
   isDragging = false;
-}
+};
 
-function drag(e) {
+const drag = (e) => {
   if (isDragging) {
     e.preventDefault();
     currentX = e.clientX - initialX;
@@ -130,7 +102,17 @@ function drag(e) {
     setTranslate(currentX, currentY, overlay);
     setTranslate(currentX * 0.9, currentY * 0.9, insideWall);
   }
-}
+};
+
+overlay.addEventListener("mousedown", dragStart);
+overlay.addEventListener("mouseup", dragEnd);
+overlay.addEventListener("mousemove", drag);
+
+// Add touch event listeners
+overlay.addEventListener("touchstart", dragStart);
+overlay.addEventListener("touchend", dragEnd);
+overlay.addEventListener("touchmove", drag);
+
 
 const setBackgroundImage = (elm, imageUrl) => {
   elm.style.backgroundImage = `url(${imageUrl})`;
