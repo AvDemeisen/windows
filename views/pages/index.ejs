@@ -58,7 +58,8 @@
 }
   </style>
   <script>
-    const container = document.getElementById('container');
+
+const container = document.getElementById('container');
 const overlay = document.getElementById('overlay');
 const insideWall = document.getElementById('insideWall');
 
@@ -69,6 +70,14 @@ let initialX;
 let initialY;
 let xOffset = 0;
 let yOffset = 0;
+
+overlay.addEventListener("mousedown", dragStart);
+overlay.addEventListener("mouseup", dragEnd);
+overlay.addEventListener("mousemove", drag);
+
+overlay.addEventListener("touchstart", dragStart, { passive: true });
+overlay.addEventListener("touchend", dragEnd, { passive: true });
+overlay.addEventListener("touchmove", drag, { passive: true });
 
 const dragStart = (e) => {
   initialX = e.clientX - xOffset;
@@ -104,14 +113,7 @@ const drag = (e) => {
   }
 };
 
-overlay.addEventListener("mousedown", dragStart);
-overlay.addEventListener("mouseup", dragEnd);
-overlay.addEventListener("mousemove", drag);
 
-// Add touch event listeners
-overlay.addEventListener("touchstart", dragStart);
-overlay.addEventListener("touchend", dragEnd);
-overlay.addEventListener("touchmove", drag);
 
 
 const setBackgroundImage = (elm, imageUrl) => {
