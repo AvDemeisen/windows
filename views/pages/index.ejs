@@ -12,18 +12,16 @@
   </div>
   <style>
     body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #5A5A5A;
-  margin: 0;
-  height: 100vh;
-
-  width: 100vw;
-
-  overflow: hidden;
-  box-sizing: border-box;
-}
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #5A5A5A;
+      margin: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      box-sizing: border-box;
+  }
 
 #container {
   position: relative;
@@ -50,6 +48,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  padding: 20px;
   height: 100%;
   width: 100%;
   background-size: contain;
@@ -73,33 +72,6 @@ let yOffset = 0;
 
 const maxAmount = 0.02
 const offsetAmount = 0.9;
-
-overlay.addEventListener("mousedown", dragStart);
-overlay.addEventListener("mouseup", dragEnd);
-overlay.addEventListener("mousemove", drag);
-
-window.addEventListener("deviceorientation", (event) => {
-  // Get the current values of gamma and beta
-  const gamma = event.gamma;
-  const beta = event.beta;
-
-  // Update the currentX and currentY values based on the orientation
-  if (gamma > 0) {
-    currentX += gamma * sensitivity;
-  } else if (gamma < 0) {
-    currentX += gamma * sensitivity;
-  }
-
-  if (beta > 0) {
-    currentY += beta * sensitivity;
-  } else if (beta < 0) {
-    currentY += beta * sensitivity;
-  }
-
-  // Update the position of the divs
-  setTranslate(currentX, currentY, overlay);
-  setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
-});
 
 const dragStart = (e) => {
   initialX = e.clientX - xOffset;
@@ -135,7 +107,32 @@ const drag = (e) => {
   }
 };
 
+overlay.addEventListener("mousedown", dragStart);
+overlay.addEventListener("mouseup", dragEnd);
+overlay.addEventListener("mousemove", drag);
 
+window.addEventListener("deviceorientation", (event) => {
+  // Get the current values of gamma and beta
+  const gamma = event.gamma;
+  const beta = event.beta;
+
+  // Update the currentX and currentY values based on the orientation
+  if (gamma > 0) {
+    currentX += gamma * sensitivity;
+  } else if (gamma < 0) {
+    currentX += gamma * sensitivity;
+  }
+
+  if (beta > 0) {
+    currentY += beta * sensitivity;
+  } else if (beta < 0) {
+    currentY += beta * sensitivity;
+  }
+
+  // Update the position of the divs
+  setTranslate(currentX, currentY, overlay);
+  setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
+});
 
 
 
