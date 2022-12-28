@@ -9,7 +9,12 @@
     <div id="backLayer" />
     <div id="midLayer" />
     <div id="frontLayer" />
-    <button id="button" onclick="permissionHandler()">START</button>
+    <div class="controls">
+      <div></div>
+      <button id="button" onclick="permissionHandler()">START</button>
+      <button onclick="sceneHandler()">CHANGE</button>
+    </div>
+
   </div>
   <style>
 
@@ -71,17 +76,22 @@
   box-sizing: border-box;
 }
 
-button {
+.controls {
   position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
   bottom: 10%;
+  padding: 0 16px;
+  display: grid;
+  grid-gap: 4px;
+  grid-template-columns: repeat(3, 1fr);
+  width: calc(100% - 8px);
+}
+
+button {
   width: auto;
-  height: 40px;
-  padding: 0 48px;
+  padding: 4px;
   transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
   border: 0;
-  border-radius: 4px;
+  border-radius: 2px;
   background-color: #28292a;
   color: #e3e3e3;
   white-space: nowrap;
@@ -116,7 +126,7 @@ let initialY;
 let xOffset = 0;
 let yOffset = 0;
 let granted = false;
-let scene = 'one';
+let scene = 'two';
 
 const maxTiltAmount = 9;
 const maxDragAmount = 0.02
@@ -182,7 +192,7 @@ const setTranslate = (xPos, yPos, el) => {
 };
 
 const startFlicker = () => {
-  setInterval(flicker, Math.random() * 1000 + 100);
+  setInterval(flicker, Math.random() * 1000 + 600);
 };
 
 const flicker = () => {
@@ -215,6 +225,10 @@ const permissionHandler = () => {
     window.addEventListener('deviceorientation', handleOrientation);
     button.style.display = 'none';
   }
+}
+
+const sceneHandler = () => {
+  scene = scene === 'one' ? 'two' : 'one'
 }
 
 
