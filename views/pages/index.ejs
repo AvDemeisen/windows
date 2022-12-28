@@ -36,8 +36,8 @@
 
 #frontLayer {
   position: absolute;
-  top: -10px;
-  left: -10px;
+  top: -5%;
+  left: -5%;
   height: 110%;
   width: 110%;
   /* top: 0;
@@ -118,17 +118,12 @@ let yOffset = 0;
 let granted = false;
 let scene = 'one';
 
-const maxAmount = 0.02
-const frontLayerOffset = 10;
+const maxTiltAmount = 9;
+const maxDragAmount = 0.02
+const frontLayerOffset = 0;
 const midLayerOffset = 0.4;
 const backLayerOffset = midLayerOffset * 2;
 const sensitivity = 1;
-
-  if (!granted) {
-    button.style.display = 'block';
-  } else {
-    button.style.display = 'none';
-  }
 
 const frontImage = (lit) => `/assets/${scene}/frontLayer-${lit ? 'lit' : 'unlit'}.png`;
 const midImage = (lit) => `/assets/${scene}/midLayer-${lit ? 'lit' : 'unlit'}.png`;
@@ -153,7 +148,7 @@ const drag = (e) => {
     currentX = e.clientX - initialX;
     currentY = e.clientY - initialY;
 
-    const maxDrag = container.offsetWidth * maxAmount; 
+    const maxDrag = container.offsetWidth * maxDragAmount; 
     if (Math.abs(currentX) > maxDrag || Math.abs(currentY) > maxDrag) return;
     xOffset = currentX;
     yOffset = currentY;
@@ -166,8 +161,8 @@ const drag = (e) => {
 
 const handleOrientation = (event) => {
   const { beta, gamma } = event;
-  currentX = gamma >= 8 ? 8 : gamma <= -8 ? -8 : gamma;
-  currentY = beta - 60 >= 8 ? 8 : beta - 60 <= -8 ? -8 : beta - 60;
+  currentX = gamma >= maxTiltAmount ? maxTiltAmount : gamma <= -maxTiltAmount ? -maxTiltAmount : gamma;
+  currentY = beta - 60 >= maxTiltAmount ? maxTiltAmount : beta - 60 <= -maxTiltAmount ? -maxTiltAmount : beta - 60;
   setTranslate(currentX - frontLayerOffset, currentY - frontLayerOffset, frontLayer);
   setTranslate(currentX * midLayerOffset, currentY * midLayerOffset, midLayer);
   setTranslate(currentX * backLayerOffset, currentY * backLayerOffset, backLayer);
@@ -194,7 +189,7 @@ const flicker = () => {
   const lit = Math.random() >= 0.5;
   const numFlickers = Math.floor(Math.random() * 4) + 1; 
   for (let i = 0; i < numFlickers; i++) {
-    setTimeout(changeColor, Math.random() * 1000 + 100, lit); 
+    setTimeout(changeColor, Math.random() * 1000 + 600, lit); 
   }
 };
 
