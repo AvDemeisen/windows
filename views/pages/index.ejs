@@ -2,14 +2,14 @@
 <html>
 <head>
   <%- include ("../partials/header.ejs") %>
- 
 </head>
 
 <body>
   <div id="container">
-    <div id="background" />
-    <div id="overlay" />
-    <button id="button" onclick="onClick()">GRANT PERMISSION</button>
+    <div id="backLayer" />
+    <div id="midLayer" />
+    <div id="frontLayer" />
+    <button id="button" onclick="permissionHandler()">START</button>
   </div>
   <style>
 
@@ -34,7 +34,7 @@
   overflow: hidden;
 }
 
-#overlay {
+#frontLayer {
   position: absolute;
   top: 0;
   left: 0;
@@ -45,12 +45,21 @@
   box-sizing: border-box;
 }
 
-
-#background {
+#midLayer {
   position: absolute;
   top: 0;
   left: 0;
-  padding: 20px;
+  height: 100%;
+  width: 100%;
+  background-size: contain;
+  background-position: bottom;
+  box-sizing: border-box;
+}
+
+#backLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
   height: 100%;
   width: 100%;
   background-size: contain;
@@ -63,15 +72,26 @@ button {
   left: 50%;
   transform: translate(-50%, -50%);
   bottom: 10%;
-  background-color: #5b5c56c0;
-  border: none;
-  border-radius: 3px;
-  color: #fff;
+  width: auto;
+  height: 40px;
+  padding: 0 48px;
+  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+  border: 0;
+  border-radius: 8px;
+  background-color: #28292a;
+  color: #e3e3e3;
+  white-space: nowrap;
   cursor: pointer;
-  font-size: 16px;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  overflow: hidden;
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+
+button::hover {
+  background-color: #062e6f;
 }
 
 
@@ -79,8 +99,9 @@ button {
   <script>
 
 const container = document.getElementById('container');
-const overlay = document.getElementById('overlay');
-const background = document.getElementById('background');
+const frontLayer = document.getElementById('frontLayer');
+const midLayer = document.getElementById('midLayer');
+const backLayer = document.getElementById('backLayer');
 const button = document.getElementById('button');
 
 let isDragging = false;
@@ -91,9 +112,11 @@ let initialY;
 let xOffset = 0;
 let yOffset = 0;
 let granted = false;
+let scene = 'one';
 
 const maxAmount = 0.02
-const offsetAmount = 0.9;
+const midLayerOffset = 0.4;
+const backLayerOffset = midLayerOffset * 2;
 const sensitivity = 1;
 
   if (!granted) {
@@ -101,6 +124,10 @@ const sensitivity = 1;
   } else {
     button.style.display = 'none';
   }
+
+const frontImage = (lit) => `/assets/${scene}/front-${lit ? 'lit' : 'unlit'}.png`;
+const midImage = (lit) => `/assets/${scene}/mid-${lit ? 'lit' : 'unlit'}.png`;
+const backImage = (lit) => `/assets/${scene}/back-${lit ? 'lit' : 'unlit'}.png`;
 
 const dragStart = (e) => {
   initialX = e.clientX - xOffset;
@@ -126,8 +153,9 @@ const drag = (e) => {
     xOffset = currentX;
     yOffset = currentY;
     console.log({currentX, currentY})
-    setTranslate(currentX, currentY, overlay);
-    setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
+    setTranslate(currentX, currentY, frontLayer);
+    setTranslate(currentX * midLayerOffset, currentY * midLayerOffset, midLayer);
+    setTranslate(currentX * backLayerOffset, currentY * backLayerOffset, backLayer);
   }
 };
 
@@ -135,13 +163,14 @@ const handleOrientation = (event) => {
   const { beta, gamma } = event;
   currentX = gamma >= 8 ? 8 : gamma <= -8 ? -8 : gamma;
   currentY = beta - 60 >= 8 ? 8 : beta - 60 <= -8 ? -8 : beta - 60;
-  setTranslate(currentX, currentY, overlay);
-  setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
+  setTranslate(currentX, currentY, frontLayer);
+  setTranslate(currentX * midLayerOffset, currentY * midLayerOffset, midLayer);
+  setTranslate(currentX * backLayerOffset, currentY * backLayerOffset, backLayer);
 }
 
-overlay.addEventListener("mousedown", dragStart);
-overlay.addEventListener("mouseup", dragEnd);
-overlay.addEventListener("mousemove", drag);
+frontLayer.addEventListener("mousedown", dragStart);
+frontLayer.addEventListener("mouseup", dragEnd);
+frontLayer.addEventListener("mousemove", drag);
 window.addEventListener("deviceorientation", handleOrientation);
 
 const setBackgroundImage = (elm, imageUrl) => {
@@ -165,26 +194,28 @@ const flicker = () => {
 };
 
 const changeColor = (lit) => {
-  setBackgroundImage(overlay, lit ? '/assets/WALL-LIT.png' : '/assets/WALL-UNLIT.png');
-  setBackgroundImage(background, lit ? '/assets/ROOM-LIT.png' : '/assets/ROOM-UNLIT.png');
+  setBackgroundImage(frontLayer, frontImage(lit));
+  setBackgroundImage(backLayer, backImage(lit));
 };
 
-const onClick = () => {
-    granted = true
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-      DeviceOrientationEvent.requestPermission()
-        .then((permissionState) => {
-          if (permissionState === 'granted') {
-            window.addEventListener('deviceorientation', handleOrientation);
+const permissionHandler = () => {
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then((permissionState) => {
+        if (permissionState === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+          button.style.display = 'none';
         } else {
           window.alert('Request to access the orientation was rejected');
         }
-        })
-        .catch(console.error);
-    } else {
-      window.addEventListener('deviceorientation', handleOrientation);
-    }
+      })
+      .catch(console.error);
+  } else {
+    window.addEventListener('deviceorientation', handleOrientation);
+    button.style.display = 'none';
   }
+}
+
 
   startFlicker();
   </script>
