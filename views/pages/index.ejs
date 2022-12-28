@@ -78,6 +78,28 @@ overlay.addEventListener("mousedown", dragStart);
 overlay.addEventListener("mouseup", dragEnd);
 overlay.addEventListener("mousemove", drag);
 
+window.addEventListener("deviceorientation", (event) => {
+  // Get the current values of gamma and beta
+  const gamma = event.gamma;
+  const beta = event.beta;
+
+  // Update the currentX and currentY values based on the orientation
+  if (gamma > 0) {
+    currentX += gamma * sensitivity;
+  } else if (gamma < 0) {
+    currentX += gamma * sensitivity;
+  }
+
+  if (beta > 0) {
+    currentY += beta * sensitivity;
+  } else if (beta < 0) {
+    currentY += beta * sensitivity;
+  }
+
+  // Update the position of the divs
+  setTranslate(currentX, currentY, overlay);
+  setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
+});
 
 const dragStart = (e) => {
   initialX = e.clientX - xOffset;
@@ -113,28 +135,7 @@ const drag = (e) => {
   }
 };
 
-window.addEventListener("deviceorientation", (event) => {
-  // Get the current values of gamma and beta
-  const gamma = event.gamma;
-  const beta = event.beta;
 
-  // Update the currentX and currentY values based on the orientation
-  if (gamma > 0) {
-    currentX += gamma * sensitivity;
-  } else if (gamma < 0) {
-    currentX += gamma * sensitivity;
-  }
-
-  if (beta > 0) {
-    currentY += beta * sensitivity;
-  } else if (beta < 0) {
-    currentY += beta * sensitivity;
-  }
-
-  // Update the position of the divs
-  setTranslate(currentX, currentY, overlay);
-  setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
-});
 
 
 
