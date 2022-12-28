@@ -40,6 +40,10 @@
   left: -10px;
   height: 110%;
   width: 110%;
+  /* top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%; */
   background-size: contain;
   background-position: bottom;
   box-sizing: border-box;
@@ -77,7 +81,7 @@ button {
   padding: 0 48px;
   transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
   border: 0;
-  border-radius: 8px;
+  border-radius: 4px;
   background-color: #28292a;
   color: #e3e3e3;
   white-space: nowrap;
@@ -115,6 +119,7 @@ let granted = false;
 let scene = 'one';
 
 const maxAmount = 0.02
+const frontLayerOffset = 10;
 const midLayerOffset = 0.4;
 const backLayerOffset = midLayerOffset * 2;
 const sensitivity = 1;
@@ -125,9 +130,9 @@ const sensitivity = 1;
     button.style.display = 'none';
   }
 
-const frontImage = (lit) => `/assets/${scene}/front-${lit ? 'lit' : 'unlit'}.png`;
-const midImage = (lit) => `/assets/${scene}/mid-${lit ? 'lit' : 'unlit'}.png`;
-const backImage = (lit) => `/assets/${scene}/back-${lit ? 'lit' : 'unlit'}.png`;
+const frontImage = (lit) => `/assets/${scene}/frontLayer-${lit ? 'lit' : 'unlit'}.png`;
+const midImage = (lit) => `/assets/${scene}/midLayer-${lit ? 'lit' : 'unlit'}.png`;
+const backImage = (lit) => `/assets/${scene}/backLayer-${lit ? 'lit' : 'unlit'}.png`;
 
 const dragStart = (e) => {
   initialX = e.clientX - xOffset;
@@ -153,7 +158,7 @@ const drag = (e) => {
     xOffset = currentX;
     yOffset = currentY;
     console.log({currentX, currentY})
-    setTranslate(currentX, currentY, frontLayer);
+    setTranslate(currentX - frontLayerOffset, currentY - frontLayerOffset, frontLayer);
     setTranslate(currentX * midLayerOffset, currentY * midLayerOffset, midLayer);
     setTranslate(currentX * backLayerOffset, currentY * backLayerOffset, backLayer);
   }
@@ -163,7 +168,7 @@ const handleOrientation = (event) => {
   const { beta, gamma } = event;
   currentX = gamma >= 8 ? 8 : gamma <= -8 ? -8 : gamma;
   currentY = beta - 60 >= 8 ? 8 : beta - 60 <= -8 ? -8 : beta - 60;
-  setTranslate(currentX, currentY, frontLayer);
+  setTranslate(currentX - frontLayerOffset, currentY - frontLayerOffset, frontLayer);
   setTranslate(currentX * midLayerOffset, currentY * midLayerOffset, midLayer);
   setTranslate(currentX * backLayerOffset, currentY * backLayerOffset, backLayer);
 }
@@ -195,6 +200,7 @@ const flicker = () => {
 
 const changeColor = (lit) => {
   setBackgroundImage(frontLayer, frontImage(lit));
+  setBackgroundImage(midLayer, midImage(lit));
   setBackgroundImage(backLayer, backImage(lit));
 };
 
