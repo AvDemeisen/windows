@@ -12,6 +12,8 @@
     <div class="orientation">
       <span  id="gamma" />
       <span  id="beta" />
+      <button onclick="onClick()">Click me</button>
+
     </div>
 
   </div>
@@ -81,6 +83,8 @@
 const container = document.getElementById('container');
 const overlay = document.getElementById('overlay');
 const background = document.getElementById('background');
+const gam = document.getElementById("gamma");
+const bem = document.getElementById("beta");
 
 let isDragging = false;
 let currentX;
@@ -92,11 +96,11 @@ let yOffset = 0;
 
 const maxAmount = 0.02
 const offsetAmount = 0.9;
-const sensitivity = 1;
+const sensitivity = 10;
 
-const dragStart = ({clientX, clientY}) => {
-  initialX = clientX - xOffset;
-  initialY = clientY - yOffset;
+const dragStart = (e) => {
+  initialX = e.clientX - xOffset;
+  initialY = e.clientY - yOffset;
   isDragging = true;
 };
 
@@ -123,12 +127,13 @@ const drag = (e) => {
   }
 };
 
-const handleOrientation = ({gamma, beta}) => {
+const handleOrientation = (event) => {
+  const { beta, gamma } = event
   currentX += gamma * sensitivity;
   currentY += beta * sensitivity;
 
-  document.getElementById("gamma").innerHTML = gamma;
-  document.getElementById("beta").innerHTML = beta;
+  gam.innerHTML = gamma;
+  bet.innerHTML = beta;
   
   setTranslate(currentX, currentY, overlay);
   setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
@@ -163,6 +168,22 @@ const changeColor = (lit) => {
   setBackgroundImage(overlay, lit ? '/assets/WALL-LIT.png' : '/assets/WALL-UNLIT.png');
   setBackgroundImage(background, lit ? '/assets/ROOM-LIT.png' : '/assets/ROOM-UNLIT.png');
 };
+
+const onClick = () => {
+  if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission()
+      .then((state) => {
+        if (state === 'granted') {
+          window.addEventListener('devicemotion', handleOrientation);
+        } else {
+          console.error('Request to access the orientation was rejected');
+        }
+      })
+      .catch(console.error);
+  } else {
+    window.addEventListener('devicemotion', handleOrientation);
+  }
+}
 
 startFlicker();
 
