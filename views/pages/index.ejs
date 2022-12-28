@@ -9,7 +9,7 @@
   <div id="container">
     <div id="background" />
     <div id="overlay" />
-    <button onclick="onClick()">GRANT PERMISSION</button>
+    <button id="button" onclick="onClick()">GRANT PERMISSION</button>
   </div>
   <style>
 
@@ -58,18 +58,22 @@
   box-sizing: border-box;
 }
 
-.orientation {
+button {
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  grid-gap: 5px;
-  top: 10%;
   left: 50%;
-  background-color: darkslategray;
-  color: white;
-  padding: 5px;
-  font-size: 14px;
+  transform: translate(-50%, -50%);
+  bottom: 10%;
+  background-color: #5b5c56c0;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
 }
+
 
   </style>
   <script>
@@ -77,6 +81,7 @@
 const container = document.getElementById('container');
 const overlay = document.getElementById('overlay');
 const background = document.getElementById('background');
+const button = document.getElementById('button');
 
 let isDragging = false;
 let currentX;
@@ -85,10 +90,17 @@ let initialX;
 let initialY;
 let xOffset = 0;
 let yOffset = 0;
+let granted = false;
 
 const maxAmount = 0.02
 const offsetAmount = 0.9;
 const sensitivity = 1;
+
+  if (!granted) {
+    button.style.display = 'block';
+  } else {
+    button.style.display = 'none';
+  }
 
 const dragStart = (e) => {
   initialX = e.clientX - xOffset;
@@ -158,11 +170,12 @@ const changeColor = (lit) => {
 };
 
 const onClick = () => {
+    granted = true
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
         .then((permissionState) => {
           if (permissionState === 'granted') {
-          window.addEventListener('deviceorientation', handleOrientation);
+            window.addEventListener('deviceorientation', handleOrientation);
         } else {
           window.alert('Request to access the orientation was rejected');
         }
