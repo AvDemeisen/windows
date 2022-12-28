@@ -9,13 +9,7 @@
   <div id="container">
     <div id="background" />
     <div id="overlay" />
-    <div class="orientation">
-      <span  id="gamma" />
-      <span  id="beta" />
-      <button onclick="onClick()">Click me</button>
-
-    </div>
-
+    <button onclick="onClick()">GRANT PERMISSION</button>
   </div>
   <style>
 
@@ -83,8 +77,6 @@
 const container = document.getElementById('container');
 const overlay = document.getElementById('overlay');
 const background = document.getElementById('background');
-const gam = document.getElementById("gamma");
-const bem = document.getElementById("beta");
 
 let isDragging = false;
 let currentX;
@@ -96,7 +88,7 @@ let yOffset = 0;
 
 const maxAmount = 0.02
 const offsetAmount = 0.9;
-const sensitivity = 10;
+const sensitivity = 1;
 
 const dragStart = (e) => {
   initialX = e.clientX - xOffset;
@@ -116,25 +108,21 @@ const drag = (e) => {
     e.preventDefault();
     currentX = e.clientX - initialX;
     currentY = e.clientY - initialY;
-  
+
     const maxDrag = container.offsetWidth * maxAmount; 
     if (Math.abs(currentX) > maxDrag || Math.abs(currentY) > maxDrag) return;
     xOffset = currentX;
     yOffset = currentY;
-  
+    console.log({currentX, currentY})
     setTranslate(currentX, currentY, overlay);
     setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
   }
 };
 
 const handleOrientation = (event) => {
-  const { beta, gamma } = event
-  currentX += gamma * sensitivity;
-  currentY += beta * sensitivity;
-
-  gam.innerHTML = gamma;
-  bet.innerHTML = beta;
-  
+  const { beta, gamma } = event;
+  currentX = gamma >= 8 ? 8 : gamma <= -8 ? -8 : gamma;
+  currentY = beta - 60 >= 8 ? 8 : beta - 60 <= -8 ? -8 : beta - 60;
   setTranslate(currentX, currentY, overlay);
   setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
 }
@@ -142,7 +130,7 @@ const handleOrientation = (event) => {
 overlay.addEventListener("mousedown", dragStart);
 overlay.addEventListener("mouseup", dragEnd);
 overlay.addEventListener("mousemove", drag);
-window.addEventListener('deviceorientation', handleOrientation);
+window.addEventListener("deviceorientation", handleOrientation);
 
 const setBackgroundImage = (elm, imageUrl) => {
   elm.style.backgroundImage = `url(${imageUrl})`;
@@ -160,7 +148,7 @@ const flicker = () => {
   const lit = Math.random() >= 0.5;
   const numFlickers = Math.floor(Math.random() * 4) + 1; 
   for (let i = 0; i < numFlickers; i++) {
-    setTimeout(changeColor, Math.random() * 1000 + 100, lit); 
+    setTimeout(changeColor, Math.random() * 1000 + 100, true); 
   }
 };
 
@@ -170,13 +158,15 @@ const changeColor = (lit) => {
 };
 
 const onClick = () => {
+
   if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    window.alert('test')
     DeviceMotionEvent.requestPermission()
       .then((state) => {
         if (state === 'granted') {
           window.addEventListener('devicemotion', handleOrientation);
         } else {
-          console.error('Request to access the orientation was rejected');
+          window.alert('Request to access the orientation was rejected');
         }
       })
       .catch(console.error);
