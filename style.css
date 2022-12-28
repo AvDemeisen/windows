@@ -1,0 +1,41 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #5A5A5A;
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+#container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 110vh;
+  width: 110vw;
+  background-size: contain;
+  background-position: bottom;
+  box-sizing: border-box;
+}
+
+
+#insideWall {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-size: contain;
+  background-position: bottom;
+  box-sizing: border-box;
+}
