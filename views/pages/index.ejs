@@ -111,13 +111,14 @@ overlay.addEventListener("mousedown", dragStart);
 overlay.addEventListener("mouseup", dragEnd);
 overlay.addEventListener("mousemove", drag);
 
-window.addEventListener("deviceorientation", (event) => {
-  // Get the current values of gamma and beta
+window.addEventListener('deviceorientation', handleOrientation);
+
+const handleOrientation = (event) => {
   const gamma = event.gamma;
   const beta = event.beta;
 
-  // Update the currentX and currentY values based on the orientation
   if (gamma > 0) {
+    window.alert(gamma)
     currentX += gamma * sensitivity;
   } else if (gamma < 0) {
     currentX += gamma * sensitivity;
@@ -129,12 +130,9 @@ window.addEventListener("deviceorientation", (event) => {
     currentY += beta * sensitivity;
   }
 
-  // Update the position of the divs
   setTranslate(currentX, currentY, overlay);
   setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
-});
-
-
+}
 
 
 const setBackgroundImage = (elm, imageUrl) => {
