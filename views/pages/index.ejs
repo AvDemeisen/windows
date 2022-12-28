@@ -72,11 +72,11 @@ let yOffset = 0;
 
 const maxAmount = 0.02
 const offsetAmount = 0.9;
+const sensitivity = 1;
 
-const dragStart = (e) => {
-  initialX = e.clientX - xOffset;
-  initialY = e.clientY - yOffset;
-  
+const dragStart = ({clientX, clientY}) => {
+  initialX = clientX - xOffset;
+  initialY = clientY - yOffset;
   isDragging = true;
 };
 
@@ -93,12 +93,8 @@ const drag = (e) => {
     currentX = e.clientX - initialX;
     currentY = e.clientY - initialY;
   
-
     const maxDrag = container.offsetWidth * maxAmount; 
-    if (Math.abs(currentX) > maxDrag || Math.abs(currentY) > maxDrag) {
-      return;
-    }
-  
+    if (Math.abs(currentX) > maxDrag || Math.abs(currentY) > maxDrag) return;
     xOffset = currentX;
     yOffset = currentY;
   
@@ -107,33 +103,21 @@ const drag = (e) => {
   }
 };
 
-overlay.addEventListener("mousedown", dragStart);
-overlay.addEventListener("mouseup", dragEnd);
-overlay.addEventListener("mousemove", drag);
-
-window.addEventListener('deviceorientation', handleOrientation);
-
-const handleOrientation = (event) => {
-  const gamma = event.gamma;
-  const beta = event.beta;
-
-  if (gamma > 0) {
-    window.alert(gamma)
-    currentX += gamma * sensitivity;
-  } else if (gamma < 0) {
-    currentX += gamma * sensitivity;
-  }
-
-  if (beta > 0) {
-    currentY += beta * sensitivity;
-  } else if (beta < 0) {
-    currentY += beta * sensitivity;
-  }
-
+const handleOrientation = ({gamma, beta}) => {
+  if (gamma > 0) currentX += gamma * sensitivity;
+  else if (gamma < 0) currentX += gamma * sensitivity;
+  
+  if (beta > 0) currentY += beta * sensitivity;
+  else if (beta < 0) currentY += beta * sensitivity;
+  
   setTranslate(currentX, currentY, overlay);
   setTranslate(currentX * offsetAmount, currentY * offsetAmount, background);
 }
 
+overlay.addEventListener("mousedown", dragStart);
+overlay.addEventListener("mouseup", dragEnd);
+overlay.addEventListener("mousemove", drag);
+window.addEventListener('deviceorientation', handleOrientation);
 
 const setBackgroundImage = (elm, imageUrl) => {
   elm.style.backgroundImage = `url(${imageUrl})`;
