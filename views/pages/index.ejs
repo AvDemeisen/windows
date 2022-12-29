@@ -10,9 +10,11 @@
     <div id="midLayer" />
     <div id="frontLayer" />
     <div class="controls">
-      <div></div>
-      <button id="button" onclick="permissionHandler()">START</button>
-      <button onclick="sceneHandler()">CHANGE</button>
+      <button class="previousButton" onclick="sceneHandler()" />
+      <div>
+        <button id="acceptButton" class="acceptButton" onclick="permissionHandler()">START</button>
+      </div>
+      <button class="nextButton" onclick="sceneHandler()" />
     </div>
 
   </div>
@@ -39,54 +41,46 @@
   overflow: hidden;
 }
 
-#frontLayer {
+#frontLayer,
+#midLayer,
+#backLayer {
   position: absolute;
+  background-size: cover;
+  background-position: bottom;
+  box-sizing: border-box;
+}
+
+#frontLayer {
   top: -5%;
   left: -5%;
   height: 110%;
   width: 110%;
-  /* top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%; */
-  background-size: contain;
-  background-position: bottom;
-  box-sizing: border-box;
 }
 
 #midLayer {
-  position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  background-size: contain;
-  background-position: bottom;
-  box-sizing: border-box;
 }
 
 #backLayer {
-  position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  background-size: contain;
-  background-position: bottom;
-  box-sizing: border-box;
 }
 
 .controls {
   position: absolute;
-  bottom: 10%;
+  bottom: 20%;
   padding: 0 16px;
-  display: grid;
-  grid-gap: 4px;
-  grid-template-columns: repeat(3, 1fr);
-  width: calc(100% - 8px);
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
 }
 
-button {
+.acceptButton {
   width: auto;
   padding: 4px;
   transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
@@ -104,8 +98,43 @@ button {
   font-size: 14px;
 }
 
-button::hover {
+.acceptButton::hover {
   background-color: #062e6f;
+}
+
+.nextButton,
+.previousButton {
+  position: relative;
+  height: 50px;
+  width: 50px;
+  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+  border: 0;
+  border-radius: 50%;
+  background-color: #28292a;
+  color: #e3e3e3;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  overflow: hidden;
+  font-size: 24px;
+}
+
+.nextButton::after,
+.previousButton::after {
+  position: absolute;
+  top: 6px;
+  left: 18px;
+}
+
+.nextButton::after {
+  content: '>';
+}
+
+
+.previousButton::after {
+  content: '<';
 }
 
 
@@ -116,7 +145,7 @@ const container = document.getElementById('container');
 const frontLayer = document.getElementById('frontLayer');
 const midLayer = document.getElementById('midLayer');
 const backLayer = document.getElementById('backLayer');
-const button = document.getElementById('button');
+const acceptButton = document.getElementById('acceptButton');
 
 let isDragging = false;
 let currentX;
@@ -199,7 +228,7 @@ const flicker = () => {
   const lit = Math.random() >= 0.5;
   const numFlickers = Math.floor(Math.random() * 4) + 1; 
   for (let i = 0; i < numFlickers; i++) {
-    setTimeout(changeColor, Math.random() * 1000 + 600, lit); 
+    setTimeout(changeColor, Math.random() * 1000 + 600, true); 
   }
 };
 
@@ -215,7 +244,7 @@ const permissionHandler = () => {
       .then((permissionState) => {
         if (permissionState === 'granted') {
           window.addEventListener('deviceorientation', handleOrientation);
-          button.style.display = 'none';
+          acceptButton.style.display = 'none';
         } else {
           window.alert('Request to access the orientation was rejected');
         }
@@ -223,7 +252,7 @@ const permissionHandler = () => {
       .catch(console.error);
   } else {
     window.addEventListener('deviceorientation', handleOrientation);
-    button.style.display = 'none';
+    acceptButton.style.display = 'none';
   }
 }
 
