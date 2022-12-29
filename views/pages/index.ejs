@@ -10,9 +10,12 @@
     <div id="midLayer"></div>
     <div id="frontLayer"></div>
     <div class="controls">
-      <button class="arrow-left" onclick="sceneHandler()"></button>
-      <button id="acceptButton" class="triangle-right" onclick="permissionHandler()"></button>
-      <button class="arrow-right" onclick="sceneHandler()"></button>
+      <button class="control" onclick="sceneHandler()">PREV</button>
+      <div class="box">
+      <button id="acceptButton" class="control" onclick="permissionHandler()">ACCEPT</button>
+      </div>
+
+      <button class="control" onclick="sceneHandler()">NEXT</button>
     </div>
   </div>
 
@@ -75,70 +78,31 @@
   display: grid;
   align-items: center;
   grid-template-columns: repeat(3, 1fr);
+  grid-gap: 8px;
+  margin: 0 8px;
+
+  width: calc(100% - 16px);
+}
+
+.box {
+  width: 100%;
+}
+.control {
+  padding: 4px;
+  background-color: #5A5A5A;
+  border: 2px solid #A3A5C2;
+  color: #A3A5C2;
+  font-size: 14px;
+  font-weight: 600;
+  align-self: center;
+  vertical-align: center;
+  letter-spacing: 2px;
   width: 100%;
 }
 
-button {
-  background-color: transparent;
-  border: none;
+.control::after {
+  color: #A3A5C2;
 }
-
-.arrow-right,
-.arrow-left {
-  position: relative;
-  display: block;
-  margin: 8px auto;
-  width: 25px;
-  height: 25px;
-  border-top: 8px solid #5A5A5A;
-  border-left: 8px solid #5A5A5A;
-}
-
-.arrow-right::after,
-.arrow-left::after  {
-  content: "";
-  position: absolute;
-  top: -12px;
-  left: -4px;
-  display: block;
-  margin: 8px auto;
-  width: 25px;
-  height: 25px;
-  border-top: 8px solid #A3A5C2;
-  border-left: 8px solid #A3A5C2;
-}
-
-.arrow-right {
- transform: rotate(135deg);
-}
-
-.arrow-left {
- transform: rotate(-45deg);
-}
-
-.triangle-right {
-  position: relative;
-  width: 0;
-  height: 0;
-  margin: 8px auto;
-  border-top: 18px solid transparent;
-  border-bottom: 18px solid transparent;
-  border-left: 30px solid #5A5A5A;
-}
-
-.triangle-right::before {
-  content: "";
-  position: absolute;
-  top: -25px;
-  left: -35px;
-  width: 0;
-  height: 0;
-  margin: 8px auto;
-  border-top: 18px solid transparent;
-  border-bottom: 18px solid transparent;
-  border-left: 30px solid#A3A5C2;
-}
-
 
 
 
