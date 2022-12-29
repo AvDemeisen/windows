@@ -10,9 +10,9 @@
     <div id="midLayer"></div>
     <div id="frontLayer"></div>
     <div class="controls">
-      <button class="previousButton" onclick="sceneHandler()" />
-      <button id="acceptButton" class="acceptButton" onclick="permissionHandler()" />
-      <button class="nextButton" onclick="sceneHandler()" />
+      <button class="arrow-left" onclick="sceneHandler()"></button>
+      <button id="acceptButton" class="triangle-right" onclick="permissionHandler()"></button>
+      <button class="arrow-right" onclick="sceneHandler()"></button>
     </div>
   </div>
 
@@ -71,97 +71,72 @@
 
 .controls {
   position: absolute;
-  bottom: 20%;
+  bottom: 15%;
   display: grid;
+  align-items: center;
   grid-template-columns: repeat(3, 1fr);
   width: 100%;
 }
 
 button {
-  background-color: #ECEDF2;
-  color: #A3A5C2;
+  background-color: transparent;
+  border: none;
 }
 
-.acceptButton,
-.nextButton,
-.previousButton {
+.arrow-right,
+.arrow-left {
   position: relative;
-  height: 48px;
-width: 48px;
-left: 48px;
-top: 0px;
-border-radius: 0px;
-  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
-  border: 0;
-  white-space: nowrap;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  overflow: hidden;
-  font-size: 24px;
-}
-
-.acceptButton::after {
-  content: "";
   display: block;
-  box-sizing: border-box;
+  margin: 8px auto;
+  width: 25px;
+  height: 25px;
+  border-top: 8px solid #5A5A5A;
+  border-left: 8px solid #5A5A5A;
+}
+
+.arrow-right::after,
+.arrow-left::after  {
+  content: "";
   position: absolute;
+  top: -12px;
+  left: -4px;
+  display: block;
+  margin: 8px auto;
+  width: 25px;
+  height: 25px;
+  border-top: 8px solid #A3A5C2;
+  border-left: 8px solid #A3A5C2;
+}
+
+.arrow-right {
+ transform: rotate(135deg);
+}
+
+.arrow-left {
+ transform: rotate(-45deg);
+}
+
+.triangle-right {
+  position: relative;
   width: 0;
-  height: 10px;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-left: 12px solid;
-  top: 15px;
-  left: 18px;
+  height: 0;
+  margin: 8px auto;
+  border-top: 18px solid transparent;
+  border-bottom: 18px solid transparent;
+  border-left: 30px solid #5A5A5A;
 }
 
-.previousButton::after,
-.previousButton::before {
-    content: "";
-    display: block;
-    box-sizing: border-box;
-    position: absolute;
-    width: 2px;
-    height: 14px;
-    border-left: 2px solid;
-    top: 18px;
-    left: 16px;
-}
-.previousButton::after {
-    width: 10px;
-    height: 10px;
-    border-bottom: 2px solid;
-    transform: rotate(45deg);
-
-    left: 22px;
-    top: 20px;
-
-}
-
-
-
-.nextButton::after,
-.nextButton::before {
-    content: "";
-    display: block;
-    box-sizing: border-box;
-    position: absolute;
-    width: 2px;
-    height: 14px;
-    border-right: 2px solid;
-    top: 18px;
-    right: 16px;
-}
-.nextButton::after {
-    width: 10px;
-    height: 10px;
-    border-bottom: 2px solid;
-    transform: rotate(-45deg);
-    
-    right: 22px;
-    top: 20px;
-
+.triangle-right::before {
+  content: "";
+  position: absolute;
+  top: -25px;
+  left: -35px;
+  width: 0;
+  height: 0;
+  margin: 8px auto;
+  border-top: 18px solid transparent;
+  border-bottom: 18px solid transparent;
+  border-left: 30px solid#A3A5C2;
 }
 
 
